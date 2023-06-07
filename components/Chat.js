@@ -2,11 +2,11 @@ import { useEffect } from "react";
 import { StyleSheet, View, Text } from "react-native";
 
 const Chat = ({ route, navigation }) => {
-  const { name } = route.params;
-
+  const { name } = route.params;              // extracts value of 'name' parameter from route prop, 
+                                              // params is an object that holds the parameters or data passed to the component during navigation
   useEffect(() => {
-    navigation.setOptions({ title: name });
-  }, []);
+    navigation.setOptions({ title: name });   // update navigation title to the value of the 'name' state variable when the component mounts
+  }, []);                                     // empty dependency array [] ensures that it runs only once
 
   return (
     <View style={styles.container}>
