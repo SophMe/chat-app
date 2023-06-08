@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { StyleSheet, View, Text, Button, TextInput, ImageBackground, Image, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Text, Button, TextInput, ImageBackground, Image, TouchableOpacity, KeyboardAvoidingView, Platform } from "react-native";
 import appBackground from "../assets/image.png";
 
 const Start = ({ navigation }) => {
@@ -14,7 +14,7 @@ const Start = ({ navigation }) => {
         resizeMode="cover"
         style={styles.image} 
         /> */}
-        <Image source={appBackground} style={styles.image} />
+      <Image source={appBackground} style={styles.image} />
       <Text>Hello Start Screen!</Text>
       <TextInput
         style={styles.textInput}
@@ -40,6 +40,7 @@ const Start = ({ navigation }) => {
       onPress={() => navigation.navigate('Chat', { name: name, color: color })} // object as a second parameter representing the data we want to use in the screen we're transitioning to
       color="whitesmoke"
       />
+      { Platform.OS === 'ios' ? <KeyboardAvoidingView behavior="padding" /> : null }
     </View>
   );
 }
