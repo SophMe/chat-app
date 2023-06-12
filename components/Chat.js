@@ -1,62 +1,41 @@
 import { useEffect, useState } from "react";
 import { StyleSheet, View, KeyboardAvoidingView, Platform } from "react-native";
 import { GiftedChat, Bubble } from "react-native-gifted-chat";
-
-const Chat = ({ route, navigation }) => {
-  const [messages, setMessages] = useState(); // the 'messages' state is used to store an array of chat messages, setMessages is a function
-  const { name, color } = route.params;       // extracts value of 'name' and 'color' parameters from route prop, 
-                                              // params is an object that holds the parameters or data passed to the component during navigation
+import { collection, onSnapshot, addDoc, query, orderBy  } from "firebase/firestore";
+ 
+const Chat = ({ route, navigation, db }) => {
+  const [messages, setMessages] = useState();       // the 'messages' state is used to store an array of chat messages, setMessages is a function
+  const { name, color, userID } = route.params;     // extracts value of 'name' and 'color' parameters from route prop, 
+                                                    // params is an object that holds the parameters or data passed to the component during navigation
 
   useEffect(() => {
-    setMessages([
-      {
-        _id: 1,
-        text: "Hello developer",
-        createdAt: new Date(),
-        user: {
-          _id: 2,
-          name: "React Native",
-          avatar: "https://cataas.com/cat/says/hello%20world!"
-        },
-      },
-      {
-        _id: 2,
-        text: "This is a system message",
-        createdAt: new Date(),
-        system: true,
-      },
-      { // message with quick reply options
-        _id: 3,
-        text: "Gifted Chat is amazing. Do you agree?",
-        createdAt: new Date(),
-        quickReplies: {
-          type: "agree",
-          keepIt: true,
-          values: [
-            {
-              title: "Yes",
-              value: "yes",
-            },
-            {
-              title: "No",
-              value: "no",
-            },
-          ],
-          user: {
-            _id: 1,
-            name: "React Native",
-            avatar: "https://cataas.com/cat/says/hello%20world!"
-          },
-        }
+    const unsubscribe = onSnapshot(
+      query(collection(db, "messages"), orderBy("createdAt", "desc")),
+      (snapshot) => {
+        const newMessages = snapshot.docs.map((doc) => {
+          const data = doc.data();
+          return {
+            _id: doc.id,
+            text: data.text,
+            createdAt: data.createdAt.toDate(),
+            user: data.user,
+          };
+        });
+  
+        setMessages(newMessages);
       }
-    ]);
-    navigation.setOptions({ title: name });   // update navigation title to the value of the 'name' state variable when the component mounts
-  }, []);                                     // empty dependency array [] ensures that it runs only once, simulating the behavior of componentDidMount
-
-
+    );
+  
+    navigation.setOptions({ title: name });
+  
+    return () => {
+      unsubscribe();  // Clean the listener when the component unmounts
+    };
+  }, []);             // empty dependency array [] ensures that it runs only once, simulating the behavior of componentDidMount
+  
   const onSend = (newMessages) => {
-    setMessages(previousMessages => GiftedChat.append(previousMessages, newMessages)) // 'previousMessages' accesses the previous state of 'messages'
-  };
+  addDoc(collection(db, "messages"), newMessages[0]);
+  }
 
   const renderBubble = (props) => {
     return <Bubble 
@@ -79,7 +58,8 @@ const Chat = ({ route, navigation }) => {
         renderBubble={renderBubble}
         onSend={messages => onSend(messages)}
         user={{
-          _id: 1
+          _id: userID,
+          name: name
         }}
       />
       { Platform.OS === "android" ? <KeyboardAvoidingView behavior="height" /> : null }

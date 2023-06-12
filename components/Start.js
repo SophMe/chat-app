@@ -1,11 +1,28 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { StyleSheet, View, Text, Button, TextInput, ImageBackground, Image, TouchableOpacity, KeyboardAvoidingView, Platform } from "react-native";
 import appBackground from "../assets/image.png";
+import { getAuth, signInAnonymously } from "firebase/auth";
+import 'firebase/compat/auth';
 
 const Start = ({ navigation }) => {
   const [name, setName] = useState('');     // initialize state variable named 'name' and function named 'setName' with initial value of an empty string
   const [color, setColor] = useState('');   // users can change background color with TouchableOpacity
   const colorOption = [ '#d2b0fe', '#b0befe', '#fed1b0', '#bcfeb0' ]
+
+  const auth = getAuth();
+
+  const signInUser = () => {
+    signInAnonymously(auth)
+    .then((result) => {
+      navigation.navigate("Chat", {
+        uid: result.user.uid,
+        name: name,
+        color: color,
+      });
+    }).catch((error) => {
+      alert.alert("Unable to sign in.")
+    });
+  };
 
   return (
     <View style={styles.container}>
@@ -37,7 +54,7 @@ const Start = ({ navigation }) => {
 
       <Button
       title="Enter chat room"
-      onPress={() => navigation.navigate('Chat', { name: name, color: color })} // object as a second parameter representing the data we want to use in the screen we're transitioning to
+      onPress={signInUser}
       color="whitesmoke"
       />
       { Platform.OS === 'ios' ? <KeyboardAvoidingView behavior="padding" /> : null }
