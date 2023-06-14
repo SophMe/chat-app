@@ -15,7 +15,7 @@ const Start = ({ navigation }) => {
     signInAnonymously(auth)
     .then((result) => {
       navigation.navigate("Chat", {
-        uid: result.user.uid,
+        userID: result.user.uid,
         name: name,
         color: color,
       });
