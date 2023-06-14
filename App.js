@@ -23,13 +23,8 @@ const App = () => {
     measurementId: "G-5DSNJ7DHDH"
   };
 
-  if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-  }
-  
-  const db = getFirestore();
-  // const app = firebase.initializeApp(firebaseConfig);
-  // const db = getFirestore(app);
+  const app = firebase.initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
   return (
     <NavigationContainer>
