@@ -26,11 +26,6 @@ const Start = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      {/* <ImageBackground
-        source={require("../assets/image.png")}
-        resizeMode="cover"
-        style={styles.image} 
-        /> */}
       <Image source={appBackground} style={styles.image} />
       <Text>Hello Start Screen!</Text>
       <TextInput
@@ -43,11 +38,12 @@ const Start = ({ navigation }) => {
         <Text style={styles.text}>Choose a background color</Text>
         <View style={styles.colorContainer}>
           {colorOption.map((colorItem, index) => (
-            <TouchableOpacity
-              key={index}
-              style={[styles.colorOption, { backgroundColor: colorItem }]}
-              onPress={() => setColor(colorItem)}
-            />
+            <View key={index}>
+              <TouchableOpacity
+                style={[styles.colorOption, { backgroundColor: colorItem }]}
+                onPress={() => setColor(colorItem)}
+              />
+            </View>
           ))}
         </View>
       </View>

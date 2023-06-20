@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { StyleSheet, View, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard } from "react-native";
+import { StyleSheet, View, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, TouchableOpacity } from "react-native";
 import { GiftedChat, Bubble, InputToolbar } from "react-native-gifted-chat";
 import { collection, onSnapshot, addDoc, orderBy, query } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
- 
+
 const Chat = ({ route, navigation, db, isConnected }) => {
   const [messages, setMessages] = useState([]);     // the 'messages' state is used to store an array of chat messages, setMessages is a function
   const { name, color, userID } = route.params;     // extracts value of 'name' and 'color' parameters from route prop, 
@@ -40,11 +40,11 @@ const Chat = ({ route, navigation, db, isConnected }) => {
           const data = doc.data();
           newMessages.push({
             ...doc.data(),
-            _id: doc._id,
+            id: doc.id,
             text: data.text,
             createdAt: data.createdAt.toDate(),
             user: {
-              _id: data.user._id,
+              id: data.user.id,
               name: data.user.name,
             },
           });
@@ -79,6 +79,10 @@ const Chat = ({ route, navigation, db, isConnected }) => {
     />
   }
 
+  const renderCustomAction = (props) => {
+    return <CustomActions {...props} />;
+  }
+
   const renderInputToolbar = (props) => {
     if (isConnected) return <InputToolbar {...props}/>;
     else return null;
@@ -93,7 +97,7 @@ const Chat = ({ route, navigation, db, isConnected }) => {
           renderInputToolbar={renderInputToolbar}
           onSend={(messages) => onSend(messages)} // message or messages??
           user={{
-            _id: String(userID),
+            id: String(userID),
             name: name
           }}
         />
