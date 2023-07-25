@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { StyleSheet, View, Text, Button, TextInput, ImageBackground, Image, TouchableOpacity, KeyboardAvoidingView, Platform } from "react-native";
 import appBackground from "../assets/image.png";
 import { getAuth, signInAnonymously } from "firebase/auth";
@@ -27,7 +27,7 @@ const Start = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Image source={appBackground} style={styles.image} />
-      <Text>Hello Start Screen!</Text>
+      <Text>Welcome to Chat App</Text>
       <TextInput
         style={styles.textInput}
         value={name}
@@ -66,7 +66,8 @@ const styles = StyleSheet.create({
   },
   text: {
     textAlign: 'center',
-    padding: 5
+    padding: 5,
+    color: 'black',
   },
   textInput: {
     width: '88%',
